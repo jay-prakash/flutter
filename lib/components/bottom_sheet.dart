@@ -6,7 +6,8 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 class BottomModalSheet extends StatefulWidget {
   final DateTime date;
   final ValueChanged valueChanged;
-  BottomModalSheet({this.date, this.valueChanged});
+  final List events;
+  BottomModalSheet({this.date, this.valueChanged, this.events});
 
   @override
   _BottomModalSheetState createState() => _BottomModalSheetState();
@@ -15,6 +16,17 @@ class BottomModalSheet extends StatefulWidget {
 class _BottomModalSheetState extends State<BottomModalSheet> {
   int veg = 0;
   int nonVeg = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    if (widget.events.length > 0) {
+      setState(() {
+        veg = widget.events[0].veg;
+        nonVeg = widget.events[0].nonVeg;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

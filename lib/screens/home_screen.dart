@@ -5,8 +5,13 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:bottom_sheet_app/components/bottom_sheet.dart';
 
-const kOrderItemTextStyle = TextStyle(
+const kOrderItemTextStyleVeg = TextStyle(
+  fontSize: 8,
+  color: Colors.black87,
+);
+const kOrderItemTextStyleNonVeg = TextStyle(
   fontSize: 7,
+  color: Colors.white,
 );
 
 class HomeScreen extends StatefulWidget {
@@ -53,14 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 weekDayMargin: EdgeInsets.symmetric(vertical: 10.0),
                 dayPadding: 0.0,
                 height: 420.0,
-                todayTextStyle: TextStyle(fontSize: 20.0),
+                weekendTextStyle: TextStyle(fontSize: 12.0),
+                todayTextStyle: TextStyle(fontSize: 12.0),
                 daysTextStyle: TextStyle(
                   fontSize: 12.0,
                 ),
                 daysHaveCircularBorder: false,
                 selectedDayButtonColor: Colors.blueGrey.shade100,
                 onDayPressed: (DateTime date, List<Event> events) {
-                  bottomModal(date);
+                  bottomModal(date, events);
+                  print(events.length);
                 },
                 markedDatesMap: _markedDateMap,
                 markedDateIconBuilder: (event) {
@@ -70,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         child: Text(
                           'veg: ${event.veg}',
-                          style: kOrderItemTextStyle,
+                          style: kOrderItemTextStyleVeg,
                           textAlign: TextAlign.center,
                         ),
                         decoration: BoxDecoration(
@@ -82,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         child: Text(
                           'n-veg: ${event.nonVeg}',
-                          style: kOrderItemTextStyle,
+                          style: kOrderItemTextStyleNonVeg,
                           textAlign: TextAlign.center,
                         ),
                         decoration: BoxDecoration(
@@ -102,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void bottomModal(DateTime date) {
+  void bottomModal(DateTime date, List events) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -118,17 +125,20 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(15.0),
             child: BottomModalSheet(
               date: date,
+              events: events,
               valueChanged: (data) {
-                setState(() {
-                  _markedDateMap.add(
-                    date,
-                    Event(
-                      date: date,
-                      veg: data['veg'],
-                      nonVeg: data['nonVeg'],
-                    ),
-                  );
-                });
+                if (data['veg'] != 0 || data['nonVeg'] != 0) {
+                  setState(() {
+                    _markedDateMap.add(
+                      date,
+                      Event(
+                        date: date,
+                        veg: data['veg'],
+                        nonVeg: data['nonVeg'],
+                      ),
+                    );
+                  });
+                }
               },
             ),
           ),
